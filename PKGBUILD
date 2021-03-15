@@ -35,8 +35,8 @@ sha256sums=('9f8b347a1374f1d180edf5e5f7b58f56f8bc0124a8a8d25fa4ba5e52fea704a8'
             'd31ccefc59ee4575bad56228f9808c3da823e74cd9d7276d44e3b9375ec4624d'
             '5ef2f169142ffb8f21d86ed9195e4e3246eadf1e7592d893761f2e1edf9a74ee'
             '600b03d0dc514ebb935f0ad3187bc1a0c02eb9d8b2bc69d1f39330d0513112df'
-            '3b655f047576729c4e6d5162423a7b1b2e24aa2cdf3d07e5729c17f9c799e8f9'
-            '6eb351ec32b72d41b566016b57450b04ded56c8e3aafd1e578b66e8027fc6cfd')
+            '5d2a853abf60d23d1bd7b0a4aee10f89fbd125a71809addf8ca72e8cc308167a'
+            'a44c45f8500738685faa2c5678a5d4283b53023ab604261bb113f2b37bd73390')
 
 package() {
     install -Dm644 "${_game}.conf" "${pkgdir}/etc/conf.d/${_game}"
@@ -46,6 +46,8 @@ package() {
     install -Dm644 "${_game}-backup.timer" "${pkgdir}/usr/lib/systemd/system/${_game}-backup.timer"
     install -Dm644 "${_game}.sysusers" "${pkgdir}/usr/lib/sysusers.d/${_game}.conf"
     install -Dm644 "${_game}.tmpfiles" "${pkgdir}/usr/lib/tmpfiles.d/${_game}.conf"
+
+    mkdir -p "${pkgdir}${_server_root}"
 
     # Give the group write permissions and set user or group ID on execution
     chmod g+ws "${pkgdir}${_server_root}"

@@ -15,14 +15,15 @@ declare -r game="valheimds"
 [[ -n "${WORLD_NAME}" ]]  && declare -r WORLD_NAME=${WORLD_NAME}      || WORLD_NAME="valheim_world"
 [[ -n "${SERVER_PORT}" ]]  && declare -r SERVER_PORT=${SERVER_PORT}   || SERVER_PORT="2456"
 [[ -n "${SERVER_PW}" ]]  && declare -r SERVER_PW=${SERVER_PW}         || SERVER_PW=""
+[[ -n "${SERVER_PUBLIC}" ]]  && declare -r SERVER_PUBLIC=${SERVER_PUBLIC}         || SERVER_PUBLIC="1"
 
 [[ -n "${BACKUP_DEST}" ]]  && declare -r BACKUP_DEST=${BACKUP_DEST}   || BACKUP_DEST="/srv/valheimds/backup"
-[[ -n "${BACKUP_PATHS}" ]] && declare -r BACKUP_PATHS=${BACKUP_PATHS} || BACKUP_PATHS="Clusters/${CLUSTER_NAME}"
+[[ -n "${BACKUP_PATHS}" ]] && declare -r BACKUP_PATHS=${BACKUP_PATHS} || BACKUP_PATHS="worlds/${WORLD_NAME}"
 [[ -n "${BACKUP_FLAGS}" ]] && declare -r BACKUP_FLAGS=${BACKUP_FLAGS} || BACKUP_FLAGS="-z"
 [[ -n "${KEEP_BACKUPS}" ]] && declare -r KEEP_BACKUPS=${KEEP_BACKUPS} || KEEP_BACKUPS="10"
 [[ -n "${GAME_USER}" ]]    && declare -r GAME_USER=${GAME_USER}       || GAME_USER="valheimds"
-[[ -n "${MAIN_EXECUTABLE}" ]] && declare -r MAIN_EXECUTABLE=${MAIN_EXECUTABLE}    || MAIN_EXECUTABLE="valheim-server"
-[[ -n "${SERVER_START_CMD}" ]] && declare -r SERVER_START_CMD=${SERVER_START_CMD} || SERVER_START_CMD="'./${MAIN_EXECUTABLE} -nographics -batchmode -name '${SERVER_NAME} -port '${SERVER_PORT} -world '${WORLD_NAME} -password '${SERVER_PW}'"
+[[ -n "${MAIN_EXECUTABLE}" ]] && declare -r MAIN_EXECUTABLE=${MAIN_EXECUTABLE}    || MAIN_EXECUTABLE="valheim_server.x86_64"
+[[ -n "${SERVER_START_CMD}" ]] && declare -r SERVER_START_CMD=${SERVER_START_CMD} || SERVER_START_CMD="'./${MAIN_EXECUTABLE}' -name \"${SERVER_NAME}\" -port \"${SERVER_PORT}\" -world \"${WORLD_NAME}\" -savedir \"${SERVER_ROOT}\" -public \"${SERVER_PUBLIC}\" -password \"${SERVER_PW}\""
 
 [[ -n "${SESSION_NAME}" ]] && declare -r SESSION_NAME=${SESSION_NAME} || SESSION_NAME="${game}"
 
@@ -33,7 +34,7 @@ declare -r game="valheimds"
 source /etc/conf.d/"${game}" 2>/dev/null || >&2 echo "Could not source /etc/conf.d/${game}"
 
 # Strictly disallow uninitialized Variables
-set -u
+# set -u
 # Exit if a single command breaks and its failure is not handled accordingly
 set -e
 
@@ -104,7 +105,7 @@ server_start() {
     # Start the game server
 
     if ! command -v -p "${SERVER_ROOT}/${MAIN_EXECUTABLE}" &> /dev/null; then
-        >&2 echo "No binaries found use update command to download DST binaries with steamcmd"
+        >&2 echo "No binaries found use update command to download Valheim binaries with steamcmd"
         exit 13
     fi
 
@@ -113,7 +114,7 @@ server_start() {
         echo "A screen ${SESSION_NAME} session is already running. Please close it first."
     else
         echo -en "Starting server..."
-        ${SUDO_CMD} screen -dmS "${SESSION_NAME}" /bin/bash -c "cd ${SERVER_ROOT}; ${SERVER_START_CMD}"
+        ${SUDO_CMD} screen -mS "${SESSION_NAME}" /bin/bash -c "cd ${SERVER_ROOT}; export templdpath=$LD_LIBRARY_PATH; export LD_LIBRARY_PATH=./linux64:$LD_LIBRARY_PATH; export SteamAppId=892970; ${SERVER_START_CMD}; export LD_LIBRARY_PATH=$templdpath"
         ${SUDO_CMD} screen -S "${SESSION_NAME}" -X logfile "${GAME_COMMAND_DUMP}"
         echo -e "\e[39;1m done\e[0m"
     fi
