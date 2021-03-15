@@ -1,0 +1,13 @@
+[Unit]
+Description=Valheim Dedicated Server
+After=local-fs.target network.target multi-user.target
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/valheimds start
+ExecStop=/usr/bin/valheimds stop
+User=valheimds
+Group=valheimds
+
+[Install]
+WantedBy=multi-user.target

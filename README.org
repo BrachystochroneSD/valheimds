@@ -1,0 +1,18 @@
+* Valheim Dedicated Server
+
+  AUR packages for valheim server
+** Main Dependencies:
+   - [[https://wiki.archlinux.org/index.php/GNU_Screen][Screen]]
+   - [[https://aur.archlinux.org/packages/steamcmd/][Steamcmd]] (AUR)
+** Installation
+   First, you need to install [[https://aur.archlinux.org/packages/steamcmd/][Steamcmd]] from AUR repository. Then, just install the packages like any other AUR packages.
+** Usage:
+   First, you need to install or update the server binaries via the steamcmd, with:
+
+   =valheimds update=.
+
+   It will install the official binaries anonymously to the /$SERVER_ROOT/ folder (by default /srv/valheimds/). You can then start the server with:
+
+   =valheimds start=.
+
+   All path can be configured in /etc/conf.d/valheimds.
