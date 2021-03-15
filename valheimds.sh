@@ -114,7 +114,7 @@ server_start() {
         echo "A screen ${SESSION_NAME} session is already running. Please close it first."
     else
         echo -en "Starting server..."
-        ${SUDO_CMD} screen -mS "${SESSION_NAME}" /bin/bash -c "cd ${SERVER_ROOT}; export templdpath=$LD_LIBRARY_PATH; export LD_LIBRARY_PATH=./linux64:$LD_LIBRARY_PATH; export SteamAppId=892970; ${SERVER_START_CMD}; export LD_LIBRARY_PATH=$templdpath"
+        ${SUDO_CMD} screen -dmS "${SESSION_NAME}" /bin/bash -c "cd ${SERVER_ROOT}; export templdpath=$LD_LIBRARY_PATH; export LD_LIBRARY_PATH=./linux64:$LD_LIBRARY_PATH; export SteamAppId=892970; ${SERVER_START_CMD}; export LD_LIBRARY_PATH=$templdpath"
         ${SUDO_CMD} screen -S "${SESSION_NAME}" -X logfile "${GAME_COMMAND_DUMP}"
         echo -e "\e[39;1m done\e[0m"
     fi
